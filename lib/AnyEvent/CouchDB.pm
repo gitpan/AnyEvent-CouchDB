@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -374,7 +374,8 @@ L<AnyEvent::CouchDB::Database>, L<AnyEvent::HTTP>, L<AnyEvent>
 
 L<Net::CouchDb>,
 L<CouchDB::Client>,
-L<POE::Component::CouchDB::Client>
+L<POE::Component::CouchDB::Client>,
+L<DB::CouchDB>
 
 =head3 View Servers
 

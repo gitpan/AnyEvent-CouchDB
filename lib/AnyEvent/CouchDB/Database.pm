@@ -6,6 +6,7 @@ use JSON::XS;
 use AnyEvent::HTTP;
 use Data::Dump::Streamer;
 use URI::Escape 'uri_escape_utf8';
+use IO::All;
 
 {
   # manual import ;-)
@@ -150,6 +151,76 @@ sub remove_doc {
   my ($cv, $cb) = cvcb($options);
   http_request(
     DELETE  => $self->uri.uri_escape_utf8($doc->{_id}).$query->({ rev => $doc->{_rev} }),
+    $cb
+  );
+  $cv;
+}
+
+sub attach {
+  my ($self, $doc, $attachment, $options) = @_;
+  my $body < io($options->{src});
+  $options->{content_type} ||= 'text/plain';
+  if ($options->{success}) {
+    my $orig = $options->{success};
+    $options->{success} = sub {
+      my ($resp) = @_;
+      $orig->($resp);
+      $doc->{_id}  = $resp->{id};
+      $doc->{_rev} = $resp->{rev};
+      $doc->{_attachments} ||= {};
+      $doc->{_attachments}->{$attachment} = {
+        'content_type' => $options->{content_type},
+        'length'       => 0,
+        'stub'         => JSON::XS::true,
+      };
+    };
+  } else {
+    $options->{success} = sub {
+      my ($resp) = @_;
+      $doc->{_id}  = $resp->{id};
+      $doc->{_rev} = $resp->{rev};
+      $doc->{_attachments} ||= {};
+      $doc->{_attachments}->{$attachment} = {
+        'content_type' => $options->{content_type},
+        'length'       => 0,
+        'stub'         => JSON::XS::true,
+      };
+    };
+  }
+  my ($cv, $cb) = cvcb($options, 201);
+  http_request(
+    PUT => $self->uri.uri_escape_utf8($doc->{_id}).
+      "/".uri_escape_utf8($attachment).$query->({ rev => $doc->{_rev} }),
+    headers => { 'Content-Type' => $options->{content_type} },
+    body    => $body,
+    $cb
+  );
+  $cv;
+}
+
+sub detach {
+  my ($self, $doc, $attachment, $options) = @_;
+  if ($options->{success}) {
+    my $orig = $options->{success};
+    $options->{success} = sub {
+      my ($resp) = @_;
+      $orig->($resp);
+      $doc->{_id}  = $resp->{id};
+      $doc->{_rev} = $resp->{rev};
+      delete $doc->{_attachments}->{$attachment};
+    };
+  } else {
+    $options->{success} = sub {
+      my ($resp) = @_;
+      $doc->{_id}  = $resp->{id};
+      $doc->{_rev} = $resp->{rev};
+      delete $doc->{_attachments}->{$attachment};
+    };
+  }
+  my ($cv, $cb) = cvcb($options);
+  http_request(
+    DELETE  => $self->uri.uri_escape_utf8($doc->{_id}).
+      "/".uri_escape_utf8($attachment).$query->({ rev => $doc->{_rev} }),
     $cb
   );
   $cv;

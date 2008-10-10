@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -91,6 +91,13 @@ sub info {
   $cv;
 }
 
+sub config {
+  my ($self, $options) = @_;
+  my ($cv, $cb) = cvcb($options);
+  http_get $self->{url} . '_config', $cb;
+  $cv;
+}
+
 sub replicate {
   my ($self, $source, $target, $options) = @_;
   my ($cv, $cb) = cvcb($options);
@@ -154,7 +161,8 @@ Finally, an asynchronous example:
 
 AnyEvent::CouchDB is a non-blocking CouchDB client implemented on top of the
 L<AnyEvent> framework.  Using this library will give you the ability to run
-many CouchDB requests asynchronously.  However, it can also be used synchronously
+many CouchDB requests asynchronously, and it was intended to be used within
+a L<Coro>+L<AnyEvent> environment.  However, it can also be used synchronously
 if you want.
 
 Its API is based on jquery.couch.js, but we've adapted the API slightly so that
@@ -317,6 +325,11 @@ looks like this:
     couchdb => 'Welcome',
     version => '0.7.3a658574'
   }
+
+=head3 $cv = $couch->config()
+
+This method requests a hashref of info regarding the configuration of the
+current CouchDB server.  It returns a condvar that you should call C<recv> on.
 
 =head3 $cv = $couch->replicate($source, $target, [ \%options ])
 

@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -406,6 +406,10 @@ I could use within L<Continuity> and L<Squatting>.
 =head1 AUTHOR
 
 John BEPPU E<lt>beppu@cpan.orgE<gt>
+
+=head1 SPECIAL THANKS
+
+Jan-Felix Wittman (for bug fixes and interesting couchdb discussion)
 
 =head1 COPYRIGHT
 

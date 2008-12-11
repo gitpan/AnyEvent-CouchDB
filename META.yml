@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               AnyEvent-CouchDB
-version:            1.04
+version:            1.05
 abstract:           a non-blocking CouchDB client based on jquery.couch.js
 author:
     - John BEPPU <beppu@cpan.org>

@@ -2,11 +2,12 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.05';
+our $VERSION = '1.07';
 
 use JSON::XS;
 use AnyEvent::HTTP;
 use AnyEvent::CouchDB::Database;
+use URI;
 use URI::Escape;
 use File::Basename;
 use Data::Dump 'pp';
@@ -40,7 +41,7 @@ sub cvcb {
     my $response;
     eval { $response = decode_json($body); };
     $cv->croak(pp(['decode_error', $@, $body, encode_json($headers)])) if ($@);
-    if ($headers->{Status} == $status) {
+    if ($headers->{Status} >= $status and $headers->{Status} < 400) {
       $success->($response);
     } else {
       $error->($headers, $response);
@@ -68,7 +69,7 @@ sub couchdb {
 sub new {
   my ($class, $url) = @_;
   $url ||= 'http://localhost:5984/';
-  bless { url => $url } => $class;
+  bless { url => URI->new($url) } => $class;
 }
 
 sub all_dbs {
@@ -80,14 +81,15 @@ sub all_dbs {
 
 sub db {
   my ($self, $name) = @_;
-  my $uri = $self->{url} . uri_escape($name) . "/";
+  my $uri = $self->{url}->clone;
+  $uri->path($name . "/");
   AnyEvent::CouchDB::Database->new($name, $uri);
 }
 
 sub info {
   my ($self, $options) = @_;
   my ($cv, $cb) = cvcb($options);
-  http_get $self->{url}, $cb;
+  http_get $self->{url}->as_string, $cb;
   $cv;
 }
 

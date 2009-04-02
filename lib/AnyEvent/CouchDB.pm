@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.08';
+our $VERSION = '1.09';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -414,7 +414,7 @@ Yuval Kogman (for bug fixes)
 
 =head1 COPYRIGHT
 
-Copyright (c) 2008 John BEPPU E<lt>beppu@cpan.orgE<gt>.
+Copyright (c) 2008-2009 John BEPPU E<lt>beppu@cpan.orgE<gt>.
 
 =head2 The "MIT" License
 

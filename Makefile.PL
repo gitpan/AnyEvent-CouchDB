@@ -1,5 +1,16 @@
 use ExtUtils::MakeMaker;
 
+print <<EOM ;
+
+    ,----------------------------------.
+    | CouchDB version 0.9.0+ required! |
+    `--. ,-----------------------------'
+       |/
+       `
+      -b
+
+EOM
+
 WriteMakefile (
   NAME          => 'AnyEvent::CouchDB',
   AUTHOR        => 'John BEPPU <beppu@cpan.org>',
@@ -11,7 +22,7 @@ WriteMakefile (
     no_index    => { directory => [ qw(eg) ] },
   },
   PREREQ_PM     => {
-    'AnyEvent::HTTP'       => 1.03,
+    'AnyEvent::HTTP'       => 1.11,
     'CouchDB::View'        => 0,
     'JSON::XS'             => 0,
     'Data::Dump::Streamer' => 0,

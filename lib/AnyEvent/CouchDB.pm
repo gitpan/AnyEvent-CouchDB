@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.10';
+our $VERSION = '1.12';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -18,7 +18,7 @@ use base 'Exporter';
 our @EXPORT = qw(couch couchdb);
 
 # default JSON encoder
-our $default_json = JSON::XS->new;
+our $default_json = JSON::XS->new->utf8;
 
 sub cvcb {
   my ($options, $status, $json) = @_;
@@ -44,7 +44,7 @@ sub cvcb {
     my ($body, $headers) = @_;
     my $response;
     eval { $response = $json->decode($body); };
-    $cv->croak(pp(['decode_error', $@, $body, $json->decode($headers)])) if ($@);
+    $cv->croak(pp(['decode_error', $@, $body, $headers])) if ($@);
     if ($headers->{Status} >= $status and $headers->{Status} < 400) {
       $success->($response);
     } else {
@@ -379,9 +379,15 @@ Doing this will return a hashref that looks something like this upon success:
 
 =head1 SEE ALSO
 
-=head2 The Original JavaScript Version
+=head2 Scripts
 
-L<http://svn.apache.org/repos/asf/couchdb/trunk/share/www/script/jquery.couch.js>
+=over 4
+
+=item L<couchdb-push>
+
+Push documents from the filesystem to CouchDB
+
+=back
 
 =head2 Related Modules
 
@@ -400,6 +406,10 @@ L<DB::CouchDB>
 
 L<CouchDB::View> - This lets you write your map/reduce functions in Perl
 instead of JavaScript.
+
+=head2 The Original JavaScript Version
+
+L<http://svn.apache.org/repos/asf/couchdb/trunk/share/www/script/jquery.couch.js>
 
 =head2 The Reason for Existence
 

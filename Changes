@@ -3,6 +3,19 @@ UNRELEASED
   * write more tests
   * need to improve startkey/endkey/key JSON encoding.
 
+1.12 2009-05-22
+  - Set utf8 flag on default JSON::XS object (by Yuval Kogman)
+
+1.11 2009-05-08
+  - Implemented special case for unescaping design document ids in open_doc().
+    id => '_design/docs'  => '/database/_design/docs'      # unescape '/'
+    id => 'whatever/else' => '/database/whatever%2Felse'   # leave '/' escaped as %2F
+  - bin/couchdb-push - Publish JSON-encoded documents from the filesystem to CouchDB
+    - filenames map to ids
+    - automatic ids are currently not allowed
+  - Arbitrary URL support
+    - get|put|post|delete $path, $options
+
 1.10 2009-04-21
   - allow the use of custom JSON encoding objects
 

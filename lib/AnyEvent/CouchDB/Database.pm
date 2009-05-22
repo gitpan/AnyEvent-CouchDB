@@ -135,7 +135,11 @@ sub all_docs_by_seq {
 sub open_doc {
   my ($self, $doc_id, $options) = @_;
   my ($cv, $cb) = cvcb($options, undef, $self->json_encoder);
-  http_get($self->uri.uri_escape_utf8($doc_id).$query->($options), $cb);
+  my $id = uri_escape_utf8($doc_id);
+  if ($id =~ qr{^_design%2F}) {
+    $id =~ s{%2F}{/}g;
+  }
+  http_get($self->uri.$id.$query->($options), $cb);
   $cv;
 }
 
@@ -309,7 +313,7 @@ sub view {
   if ($options->{keys}) {
     my $body = { keys => $options->{keys} };
     http_request(
-      'POST' => $uri,
+      POST    => $uri,
       headers => { 'Content-Type' => 'application/json' },
       body    => $self->json($body),
       $cb
@@ -317,6 +321,86 @@ sub view {
   } else {
     http_get($uri.$query->($options), $cb);
   }
+  $cv;
+}
+
+# arbitrary url support
+
+sub get {
+  my ($self, $path, $options) = @_;
+  my ($cv, $cb) = cvcb($options, undef, $self->json_encoder);
+  my $headers = $options->{headers};
+  my $uri;
+  if (ref($headers) eq 'HASH') {
+    delete $options->{headers};
+  } else {
+    $headers = {};
+  }
+  $uri = $self->uri."$path".$query->($options);
+  http_request(
+    GET     => $uri,
+    headers => $headers,
+    $cb
+  );
+  $cv;
+}
+
+sub post {
+  my ($self, $path, $options) = @_;
+  my ($cv, $cb) = cvcb($options, undef, $self->json_encoder);
+  my $headers = $options->{headers};
+  my $uri;
+  if (ref($headers) eq 'HASH') {
+    delete $options->{headers};
+  } else {
+    $headers = {};
+  }
+  $uri = $self->uri."$path";
+  http_request(
+    POST    => $uri,
+    headers => $headers,
+    body    => $query->($options),
+    $cb
+  );
+  $cv;
+}
+
+sub delete {
+  my ($self, $path, $options) = @_;
+  my ($cv, $cb) = cvcb($options, undef, $self->json_encoder);
+  my $headers = $options->{headers};
+  my $uri;
+  if (ref($headers) eq 'HASH') {
+    delete $options->{headers};
+  } else {
+    $headers = {};
+  }
+  $uri = $self->uri."$path".$query->($options);
+  http_request(
+    DELETE  => $uri,
+    headers => $headers,
+    $cb
+  );
+  $cv;
+}
+
+sub put {
+  my ($self, $path, $options) = @_;
+  my ($cv, $cb) = cvcb($options, undef, $self->json_encoder);
+  my $headers = $options->{headers};
+  my $uri;
+  if (ref($headers) eq 'HASH') {
+    delete $options->{headers};
+  } else {
+    $headers = {};
+  }
+  $uri = $self->uri."$path";
+  http_request(
+    PUT     => $uri,
+    headers => $headers,
+    body    => $query->($options),
+    $cb
+  );
   $cv;
 }
 
@@ -482,6 +566,16 @@ language the map and reduce functions are written in.  The final parameter,
 C<\%options>, can be used to manipulate the result-set in standard ways.
 
 This method returns a condvar.
+
+=head2 Generic HTTP Methods
+
+=head3 $cv = $db->get($path, [ \%options ])
+
+=head3 $cv = $db->post($path, [ \%options ])
+
+=head3 $cv = $db->put($path, [ \%options ])
+
+=head3 $cv = $db->delete($path, [ \%options ])
 
 =head1 AUTHOR
 

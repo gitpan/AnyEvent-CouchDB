@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               AnyEvent-CouchDB
-version:            1.12
+version:            1.13
 abstract:           a non-blocking CouchDB client based on jquery.couch.js
 author:
     - John BEPPU <beppu@cpan.org>
@@ -13,7 +13,6 @@ build_requires:
 requires:
     AnyEvent::HTTP:       1.11
     CouchDB::View:        0
-    Data::Dump:           0
     Data::Dump::Streamer:  0
     IO::All:              0
     JSON::XS:             0
@@ -22,7 +21,7 @@ no_index:
         - t
         - inc
         - eg
-generated_by:       ExtUtils::MakeMaker version 6.50
+generated_by:       ExtUtils::MakeMaker version 6.54
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

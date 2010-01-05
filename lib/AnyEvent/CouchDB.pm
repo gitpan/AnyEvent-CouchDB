@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.12';
+our $VERSION = '1.13';
 
 use JSON::XS;
 use AnyEvent::HTTP;
@@ -10,7 +10,6 @@ use AnyEvent::CouchDB::Database;
 use URI;
 use URI::Escape;
 use File::Basename;
-use Data::Dump 'pp';
 
 use Exporter;
 use base 'Exporter';
@@ -37,14 +36,14 @@ sub cvcb {
   my $error = sub {
     my ($headers, $response) = @_;
     $options->{error}->(@_) if ($options->{error});
-    $cv->croak(pp([$headers, $response]));
+    $cv->croak([$headers, $response]);
   };
 
   my $cb = sub {
     my ($body, $headers) = @_;
     my $response;
     eval { $response = $json->decode($body); };
-    $cv->croak(pp(['decode_error', $@, $body, $headers])) if ($@);
+    $cv->croak(['decode_error', $@, $body, $headers]) if ($@);
     if ($headers->{Status} >= $status and $headers->{Status} < 400) {
       $success->($response);
     } else {
@@ -61,7 +60,7 @@ sub couch {
 sub couchdb {
   my $db = shift;
   if ($db =~ /^http:/) {
-    my $uri  = $db;
+    my $uri  = URI->new($db);
     my $name = basename($db);
     $uri .= '/' if ($uri !~ /\/$/);
     AnyEvent::CouchDB::Database->new($name, $uri);
@@ -410,6 +409,10 @@ instead of JavaScript.
 =head2 The Original JavaScript Version
 
 L<http://svn.apache.org/repos/asf/couchdb/trunk/share/www/script/jquery.couch.js>
+
+=head2 The GitHub Repository
+
+L<http://github.com/beppu/anyevent-couchdb/tree/master>
 
 =head2 The Reason for Existence
 

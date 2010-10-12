@@ -3,10 +3,14 @@ UNRELEASED
   * write more tests
   * need to improve startkey/endkey/key JSON encoding.
 
+1.22 2010-10-12
+  - Reverted a change to the exception code that serialized the exception data to JSON.
+
 1.21 2010-09-13
   - Had some problems with PAUSE.  Same as 1.20.  Reuploading.
 
-1.20 2010-09-13
+1.20 2010-05-13
+  - a double-utf8 bug was fixed (by Stéphane)
   - fetch attachments using open_attachment(). (by Michael Zedeler)
 
 1.19 2010-05-06

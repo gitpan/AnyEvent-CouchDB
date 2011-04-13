@@ -387,15 +387,22 @@ sub view {
   my $uri = $self->uri . "_design/" . $dname . "/_view/" . $vname;
   if ( $options->{keys} ) {
     my $body = { keys => $options->{keys} };
+    my $opts = { %$options };
+    delete $opts->{keys};
     http_request(
-      POST    => $uri,
+      POST    => $uri . $query->($opts),
       headers => $self->_build_headers($options),
       body    => $self->json($body),
       $cb
     );
   }
   else {
-    http_get( $uri . $query->($options), $cb );
+    my $headers = $self->_build_headers($options);
+    http_request(
+      GET     => $uri . $query->($options),
+      headers => $headers,
+      $cb
+    );
   }
   $cv;
 }

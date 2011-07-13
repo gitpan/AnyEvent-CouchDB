@@ -1,0 +1,49 @@
+{
+   "abstract" : "a non-blocking CouchDB client based on jquery.couch.js",
+   "author" : [
+      "John BEPPU <beppu@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 6.5711, CPAN::Meta::Converter version 2.110580",
+   "license" : [
+      "mit"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "AnyEvent-CouchDB",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc",
+         "eg"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : 0
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : 0
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "AnyEvent::HTTP" : "1.11",
+            "CouchDB::View" : 0,
+            "Data::Dump::Streamer" : 0,
+            "Exception::Class" : 0,
+            "IO::All" : 0,
+            "JSON" : 0,
+            "Scalar::Util" : 0,
+            "Scope::Guard" : 0
+         }
+      }
+   },
+   "release_status" : "stable",
+   "version" : "1.25"
+}

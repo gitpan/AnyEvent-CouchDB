@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 
 use JSON;
 use AnyEvent::HTTP;
@@ -111,7 +111,7 @@ sub couch {
 
 sub couchdb {
   my $db = shift;
-  if ($db =~ /^http:/) {
+  if ($db =~ /^https?:/) {
     $db .= '/' if ($db !~ /\/$/);
     my $uri  = URI->new($db);
     my $name = basename($db);
@@ -497,6 +497,10 @@ L<http://svn.apache.org/repos/asf/couchdb/trunk/share/www/script/jquery.couch.js
 
 L<http://github.com/beppu/anyevent-couchdb/tree/master>
 
+=head2 The Antepenultimate CouchDB Reference Card
+
+L<http://blog.fupps.com/2010/04/20/the-antepenultimate-couchdb-reference-card/>
+
 =head2 The Reason for Existence
 
 AnyEvent::CouchDB exists, because I needed a non-blocking CouchDB client that
@@ -515,6 +519,8 @@ Yuval Kogman (for bug fixes)
 Michael Zedeler (for bug fixes)
 
 franck [http://github.com/franckcuny] (for feature enhancements)
+
+Luke Closs (for bug fixes)
 
 =head1 COPYRIGHT
 

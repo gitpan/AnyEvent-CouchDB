@@ -2,7 +2,7 @@ package AnyEvent::CouchDB;
 
 use strict;
 use warnings;
-our $VERSION = '1.29';
+our $VERSION = '1.30';
 
 use JSON;
 use AnyEvent::HTTP;
@@ -64,6 +64,7 @@ sub cvcb {
   $status ||= 200;
   $json   ||= $default_json;
   my $cv = AE::cv;
+  AE::now_update();
 
   # default success handler sends back decoded json response
   my $success = sub {
@@ -525,6 +526,10 @@ Luke Closs (for bug fixes)
 Michael Henson (bug fixes)
 
 James Howe (bug reports)
+
+Dave Williams (bug fixes)
+
+Walter Werner (buf fixes)
 
 =head1 COPYRIGHT
 
